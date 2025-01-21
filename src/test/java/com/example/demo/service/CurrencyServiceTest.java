@@ -69,31 +69,39 @@ class CurrencyServiceTest {
         }
     }
 
-    @Test
-    void testConvertCurrency() {
-        try {
-            ConversionRequest request = new ConversionRequest();
-            request.setFrom("USD");
-            request.setTo("EUR");
-            request.setAmount(100.0);
+   @Test
+void testConvertCurrency() {
+    try {
+        // Mocking an external dependency (e.g., fetchRates method)
+        Map<String, Double> rates = new HashMap<>();
+        rates.put("USD", 1.035985);
+        rates.put("EUR", 1.0); 
 
-            Map<String, Double> rates = new HashMap<>();
-            rates.put("USD", 1.035985);
-            rates.put("EUR", 1.0); 
+        lenient().when(currencyService.fetchRates("USD")).thenReturn(rates);
 
-            double result = currencyService.convertCurrency(request, rates);
-            assertEquals(96.53, result, 0.01);
-        } catch (IllegalArgumentException e) {
-            fail("IllegalArgumentException occurred: " + e.getMessage());
-        } catch (Exception e) {
-            fail("Unexpected exception occurred during testConvertCurrency: " + e.getMessage());
-        }
+        // Creating a ConversionRequest object
+        ConversionRequest request = new ConversionRequest();
+        request.setFrom("USD");
+        request.setTo("EUR");
+        request.setAmount(100.0);
+
+        // Call the method under test
+        double result = currencyService.convertCurrency(request, rates);
+
+        // Assert the result
+        assertEquals(96.53, result, 0.01);
+    } catch (IllegalArgumentException e) {
+        fail("IllegalArgumentException occurred: " + e.getMessage());
+    } catch (Exception e) {
+        fail("Unexpected exception occurred during testConvertCurrency: " + e.getMessage());
     }
+}
+
 
     @Test
     void testFetchRatesWithErrorHandling() {
         try {
-            when(restTemplate.exchange(
+            lenient().when(restTemplate.exchange(
                 eq(API_URL + "?access_key=" + API_KEY),
                 eq(HttpMethod.GET),
                 eq(null),
