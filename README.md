@@ -1,7 +1,8 @@
 # Instructions to run the application locally
  ## Git Cloning
    Command: git clone https://github.com/CoderVimalMathew/Hatio_SOE.git
-            cd Hatio_SOE
+       
+   cd Hatio_SOE
  ## Run spring boot application
    Command: mvn spring-boot:run
  ## REST Endpoints
